@@ -221,7 +221,7 @@ services:
         - kafka2
         - kafka3
       networks:
-        - data_network
+        - cryptoViz
       deploy:
         resources:
           limits:
@@ -242,7 +242,7 @@ services:
       depends_on:
         - elasticsearch
       networks:
-        - data_network
+        - cryptoViz
       restart: always
 
 networks:
