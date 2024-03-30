@@ -6,6 +6,8 @@ start:
 	@echo "Launched docker-compose"
 	@sleep 10
 	cd nifi/ && ./init-nifi.sh
+	cd ../ && cd kafka-connect/ && ./init-kafka-connect.sh
+	@echo "created kafka-connect connector"
 
 down:
 	docker compose down
