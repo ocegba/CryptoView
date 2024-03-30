@@ -129,6 +129,7 @@ services:
         - kafka1
         - kafka2
         - kafka3
+        - nifi
       deploy:
         resources:
           limits:
@@ -169,6 +170,30 @@ services:
             memory: 5G
       restart: always
 
+
+    nifi:
+      image: apache/nifi:latest
+      container_name: nifi
+      networks:
+        - cryptoViz
+      ports:
+        - "8443:8443"
+      volumes:
+        - ./nifi/templates:/opt/nifi/nifi-current/conf/templates
+      environment:
+        - SINGLE_USER_CREDENTIALS_USERNAME=${NIFI_USERNAME}
+        - SINGLE_USER_CREDENTIALS_PASSWORD=${NIFI_PASSWORD}
+        - NIFI_ZK_CONNECT_STRING="zookeeper:2181"
+        - NIFI_USE_HTTP=true
+      deploy:
+        resources:
+          limits:
+            cpus: '0.50'
+            memory: 2G
+          reservations:
+            cpus: '0.25'
+            memory: 1G
+      restart: always
 
 networks:
   cryptoViz:

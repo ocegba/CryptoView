@@ -2,7 +2,10 @@
 
 # Commandes Docker Compose
 start:
-	docker compose up -d
+	docker-compose up --build -d
+	@echo "Launched docker-compose"
+	@sleep 10
+	cd nifi/ && ./init-nifi.sh
 
 down:
 	docker compose down
