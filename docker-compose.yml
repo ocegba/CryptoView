@@ -6,7 +6,7 @@ services:
       image: "bitnami/zookeeper:latest"
       container_name: zookeeper
       networks:
-        - data_network
+        - cryptoViz
       ports:
         - "2181:2181"
       environment:
@@ -17,7 +17,7 @@ services:
       image: "bitnami/kafka:latest"
       container_name: kafka1
       networks:
-        - data_network
+        - cryptoViz
       ports:
         - "9092:9092"
       environment:
@@ -44,7 +44,7 @@ services:
       image: "bitnami/kafka:latest"
       container_name: kafka2
       networks:
-        - data_network
+        - cryptoViz
       ports:
         - "9093:9092"
       environment:
@@ -70,7 +70,7 @@ services:
       image: "bitnami/kafka:latest"
       container_name: kafka3
       networks:
-        - data_network
+        - cryptoViz
       ports:
         - "9094:9092"
       environment:
@@ -91,3 +91,28 @@ services:
             cpus: '0.25'
             memory: 1G
       restart: always
+
+
+    spark-master:
+      image: bitnami/spark:latest
+      ports:
+        - "7077:7077"
+      networks:
+        - cryptoViz
+      environment:
+        - SPARK_MODE=master
+
+    spark-worker:
+      image: bitnami/spark:latest
+      networks:
+        - cryptoViz
+      ports:
+        - "8081:8081"
+      environment:
+        - SPARK_MODE=worker
+        - SPARK_MASTER_URL=spark://spark-master:7077
+      restart: always
+
+
+networks:
+  cryptoViz:
