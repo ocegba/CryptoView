@@ -114,5 +114,61 @@ services:
       restart: always
 
 
+    kafka-producer:
+      build:
+        context: ./kafka/producer
+        dockerfile: Dockerfile
+      container_name: kafka-producer
+      environment:
+        BINANCE_WEBSOCKETS: "wss://stream.binance.com:9443/ws/btcusdt@kline_1m"
+        TOPIC: kafka-nifi-src
+        BOOTSTRAP_SERVER: "kafka1:9092,kafka2:9092,kafka3:9092"
+      networks:
+        - cryptoViz
+      depends_on:
+        - kafka1
+        - kafka2
+        - kafka3
+      deploy:
+        resources:
+          limits:
+            cpus: '0.50'
+            memory: 2G
+          reservations:
+            cpus: '0.25'
+            memory: 1G
+      restart: always
+
+    kafka-consumer:
+      build:
+        context: ./kafka/consumer
+        dockerfile: Dockerfile
+      container_name: kafka-consumer
+      environment:
+        TOPIC: kafka-nifi-dst
+        BOOTSTRAP_SERVER: "kafka1:9092,kafka2:9092,kafka3:9092"
+        PRODUCER_TOPIC: kafka-final
+      networks:
+        - cryptoViz
+      volumes:
+        - ./kafka/consumer/app:/app
+      depends_on:
+        - kafka1
+        - kafka2
+        - kafka3
+        - kafka-producer
+        - spark-master
+        - spark-worker
+      deploy:
+        resources:
+          limits:
+            cpus: '0.50'
+            memory: 8G
+          reservations:
+            cpus: '0.25'
+            memory: 5G
+      restart: always
+
+
 networks:
   cryptoViz:
