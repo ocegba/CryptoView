@@ -1,0 +1,5 @@
+apscheduler
+kafka-python
+requests
+websockets
+async
